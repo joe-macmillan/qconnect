@@ -1,15 +1,15 @@
 from azure.cli.core import get_default_cli
 from azconnect.cache import load_cache, save_cache, CacheType
-from azconnect.models import Cluster, ClusterType
+from azconnect.models import Cluster, ClusterType, Subscription
 
-def get_subscription_list():
+def get_subscription_list()->list[Subscription]:
     cached_subs = load_cache(CacheType.SUBSCRIPTION)
     if cached_subs:
         return cached_subs
     cli = get_default_cli()
     cli.invoke(['account', 'subscription', 'list',"--output", "none" ])
     result = cli.result.result
-    subscriptions = [sub.get('subscriptionId') for sub in result]
+    subscriptions = [Subscription(id=sub.get('subscriptionId'), name=sub.get('displayName')) for sub in result]
     save_cache(CacheType.SUBSCRIPTION,data=subscriptions)
 
     return subscriptions
@@ -28,7 +28,7 @@ def get_cluster_list()-> list[Cluster]:
     aks_clusters = []
     arc_clusters = []
     for sub in subscriptions:
-        cli.invoke(['account', 'set', '--subscription', sub ,"--output", "none" ])
+        cli.invoke(['account', 'set', '--subscription', sub['id'] ,"--output", "none" ])
         cli.invoke(["aks", "list", "--output", "none"])
         result = cli.result.result
         for aks in result:
@@ -36,7 +36,7 @@ def get_cluster_list()-> list[Cluster]:
                 Cluster(
                 name=aks.get('name'),
                 resource_group=aks.get('resourceGroup'),
-                subscription_id=sub,
+                subscription=sub,
                 type=ClusterType.AKS
                 )
             )
@@ -48,7 +48,7 @@ def get_cluster_list()-> list[Cluster]:
                 Cluster(
                 name=arc.get('name'),
                 resource_group=arc.get('resourceGroup'),
-                subscription_id=sub,
+                subscription=sub,
                 type=ClusterType.ARC
                 )
             )
@@ -60,7 +60,7 @@ def get_cluster_list()-> list[Cluster]:
 
 def connect_to_cluster(cluster: Cluster):
     cli = get_default_cli()
-    cli.invoke(['account', 'set', '--subscription', cluster['subscriptionId'] ,"--output", "none" ])
+    cli.invoke(['account', 'set', '--subscription', cluster['subscription']['id'] ,"--output", "none" ])
 
     if cluster['type'] == ClusterType.AKS:
         cli.invoke(["aks", "get-credentials", "--name", cluster['name'], "--resource-group", cluster['resourceGroup']])
