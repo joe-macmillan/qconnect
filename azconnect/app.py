@@ -30,7 +30,7 @@ def refresh_clusters():
 def list_clusters():
     """List available Kubernetes clusters"""
 
-    table = Table("Num","Cluster Name", "Resource Group", "Subscription")
+    table = Table("Index","Cluster Name", "Resource Group", "Subscription")
     for i, cluster in enumerate(clusters):
         table.add_row(str(i),cluster['name'],cluster['resourceGroup'],cluster['subscription']['name'])
     console.print(table)
