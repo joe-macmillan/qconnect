@@ -3,7 +3,7 @@ qc = "azconnect.app:app"
 
 [tool.poetry]
 name = "azconnect"
-version = "0.1.0"
+version = "0.1.1"
 description = "A cli tool for connecting to Kubernetes Clusters"
 authors = ["Joe MacMillan <joe@quasar.com>"]
 readme = "README.md"
