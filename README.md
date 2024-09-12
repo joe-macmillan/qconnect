@@ -18,3 +18,5 @@ Note: `qc` caches the list of available clusters for 24 hours to speed up subseq
 To connect to a cluster run `qc connect <cluster_name>` and the CLI tool will run the necessary AzureCLI commands in the background to connect to the cluster and update the `~/.kube/config` file used by `kubectl`. 
 
 Alternatively, you can connect to a cluster by using the index number, as shown in the output of `qc ls`. Run `qc --c <cluster_index>`, for example `qc connect --c 2`.
+
+If you are prompted that `The command requires the extension connectedk8s. Do you want to install it now? The command will continue to run after the extension is installed.`, please select yes!
