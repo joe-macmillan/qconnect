@@ -1,10 +1,14 @@
 ## Installation
-Run the following command to install the cli tool
+To install the azconnect CLI tool, you'll need `pipx`, which can be found at [pipx installation](https://pipx.pypa.io/stable/installation/#on-linux). Once installed, run the following command:
+
 ```bash
 pipx install git+https://github.com/joe-macmillan/qconnect
 ```
-To test if the cli tool works, make sure to run `az login` to connect to Azure and then run the following command:
+## Usage
+To test if the azconnect CLI tool works, first connect to Azure using `az login`, then run the following command:
 ```bash
-qc list
+qc ls
 ```
-The output should look like a table listing all the clusters available.
+This command should output a table listing all available clusters.
+
+Note: `qc` caches the list of available clusters for 24 hours to speed up subsequent runs. However, if clusters are added or deleted, you can update the list by running `qc refresh`.
